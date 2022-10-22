@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -65,11 +66,12 @@ public class Dot implements MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-
+        System.out.println("I was pressed!");
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
+        System.out.println("I was pressed!");
 
     }
 

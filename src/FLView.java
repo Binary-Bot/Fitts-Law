@@ -2,7 +2,8 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class FLView {
     private JPanel mainPanel;
@@ -11,6 +12,7 @@ public class FLView {
     private JSpinner radiusSpinner;
     private JLabel testRadiusLabel;
     private JSpinner spinner1;
+    private JButton start;
 
     private TestPanel testPanel;
 
@@ -27,12 +29,10 @@ public class FLView {
                 testPanel.changeTargetButtonRadius(value);
             }
         });
-        spinner1.addChangeListener(new ChangeListener() {
+        start.addActionListener(new ActionListener() {
             @Override
-            public void stateChanged(ChangeEvent e) {
-                JSpinner spinner = (JSpinner) e.getSource();
-                int value = (int)spinner.getValue();
-                testPanel.setRadius(value);
+            public void actionPerformed(ActionEvent e) {
+                testPanel.startTest((Integer) spinner1.getValue());
             }
         });
     }
