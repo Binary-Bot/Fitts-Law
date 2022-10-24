@@ -10,8 +10,8 @@ public class TestPanel extends JPanel {
     private ArrayList<Dot> dots;
     private int radius;
     private int targetRadius;
-    private static final int width = 500;
-    private static final int height = 500;
+    private static final int width = 700;
+    private static final int height = 700;
     private final Color bgColor;
     private Dot visibleDot;
     private int start;
@@ -19,6 +19,8 @@ public class TestPanel extends JPanel {
     private long sTime;
     private long totalTime;
     private JLabel label;
+    private JLabel label2;
+
 
     public TestPanel() {
         bgColor = Color.DARK_GRAY;
@@ -26,13 +28,9 @@ public class TestPanel extends JPanel {
         setPreferredSize(new Dimension(width, height));
         random = new Random();
         dots = new ArrayList<Dot>();
-        radius = 200;
-        trial = -1;
+        radius = 100;
         targetRadius = 10;
-        totalTime = 0;
-        generateTargetButtons();
-        start = random.nextInt(dots.size());
-        visibleDot = dots.get(start);
+        trial = -1;
 
         addMouseListener(new MouseListener() {
             @Override
@@ -63,13 +61,16 @@ public class TestPanel extends JPanel {
         });
     }
 
-    public void startTest(int radius) {
+    public void startTest(int targetRadius, int radius) {
+        this.removeAll();
+        dots.clear();
         this.radius = radius;
+        this.targetRadius = targetRadius;
+        trial = 0;
+        totalTime = 0;
         generateTargetButtons();
         start = random.nextInt(dots.size());
         visibleDot = dots.get(start);
-        trial = 0;
-        totalTime = 0;
     }
 
     private void generateTargetButtons() {
@@ -77,7 +78,6 @@ public class TestPanel extends JPanel {
         int yCenter = height / 2;
         int newX, newY;
         Dot dot;
-
         for (int i = 0; i < 360; i+=30) {
             newX = (int) (xCenter + (radius * Math.cos(Math.toRadians(i))));
             newY = (int) (yCenter + (radius * Math.sin(Math.toRadians(i))));
@@ -90,9 +90,16 @@ public class TestPanel extends JPanel {
     @Override
     protected synchronized void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if (trial <= 24 && trial >=0) {
-            visibleDot.setColor(Color.RED);
-            visibleDot.paint(g);
+        if (trial == -1) {
+            for (Dot dot : dots) {
+                dot.paint(g);
+            }
+        }
+        if (visibleDot != null) {
+            if (trial <= 24 && trial >= 0) {
+                visibleDot.setColor(Color.RED);
+                visibleDot.paint(g);
+            }
         }
         repaint();
     }
@@ -108,21 +115,29 @@ public class TestPanel extends JPanel {
             visibleDot = dots.get(start);
             trial++;
         }
-        if (trial == 24){
-            JLabel label1 = new JLabel();
-            System.out.println("showNextDot");
-            float iod = (2 *targetRadius)/radius;
-            float avgMotionTime = (totalTime/24);
-            System.out.println(iod);
-            String s = String.format("Index of Difficulty: %f \n Average Motion Time: %f", iod, avgMotionTime);
-            label1.setText(s);
-            label1.setFont(new Font("Fira Code", Font.BOLD, 36));
-            label1.setForeground(Color.GRAY);
-            this.add(label1);
+        if (trial == 23){
+            JPanel panel = new JPanel();
+            label = new JLabel();
+            float iod = (float) Math.log((2 *radius)/targetRadius);
+            float avgMotionTime = (float) (totalTime/24);
+            String s = String.format("Index of Difficulty: %f", iod, avgMotionTime);
+            label.setText(s);
+            label.setFont(new Font("Fira Code", Font.BOLD, 28));
+            label.setForeground(Color.GRAY);
+            panel.add(label, BorderLayout.NORTH);
+            label2 = new JLabel();
+            s = String.format("Average Motion Time: %f",avgMotionTime);
+            label2.setText(s);
+            label2.setFont(new Font("Fira Code", Font.BOLD, 28));
+            label2.setForeground(Color.GRAY);
+            panel.add(label2, BorderLayout.SOUTH);
+            panel.setPreferredSize(new Dimension(500, 200));
+            this.add(panel, BorderLayout.CENTER);
         }
     }
 
     public void changeTargetButtonRadius(int newRadius) {
+        this.targetRadius = newRadius;
         for (Dot d: dots) {
             d.setRadius(newRadius);
         }
