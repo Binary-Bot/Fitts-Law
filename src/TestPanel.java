@@ -5,6 +5,7 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Random;
 
+
 public class TestPanel extends JPanel {
     private Random random;
     private ArrayList<Dot> dots;
@@ -40,13 +41,12 @@ public class TestPanel extends JPanel {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                sTime = System.currentTimeMillis();
                 showNextDot(new Point(e.getX(), e.getY()));
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                totalTime += System.currentTimeMillis() - sTime;
+
             }
 
             @Override
@@ -112,8 +112,14 @@ public class TestPanel extends JPanel {
                 start = 1 + (start - 1 + 7) % 12;
             }
             if (start == 12) start = 0;
+            if (trial == 0) {
+                totalTime = 0;
+            } else {
+                totalTime += System.currentTimeMillis() - sTime;
+            }
             visibleDot = dots.get(start);
             trial++;
+            sTime = System.currentTimeMillis();
         }
         if (trial == 23){
             JPanel panel = new JPanel();
